@@ -1,0 +1,32 @@
+###
+POST http://localhost:8001/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsLlpAbWFpbC5jb20iLCJleHAiOjE2OTE3NzA5NjEsImlhdCI6MTY5MTcyNzc2MSwiaWQiOiJjMWVjMDczNy00M2IzLTQ4Y2QtOGNiMy00ZmMzNGExYjRiMjEiLCJuYW1lIjoiVXNlciBaIn0.WDXVqWazjDJhUU5k7hcG0Gt8RiFmlx0g_UVH9hqBTGM
+
+{
+    "name": "Product 1",
+    "price": 100
+}
+
+###
+GET  http://localhost:8001/products?id=7e166fe2-9d69-46ee-9375-d466047af2c4
+Content-Type: application/json
+
+###
+GET  http://localhost:8001/products/all?limit=5&page=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsLlpAbWFpbC5jb20iLCJleHAiOjE2OTE3NzA5NjEsImlhdCI6MTY5MTcyNzc2MSwiaWQiOiJjMWVjMDczNy00M2IzLTQ4Y2QtOGNiMy00ZmMzNGExYjRiMjEiLCJuYW1lIjoiVXNlciBaIn0.WDXVqWazjDJhUU5k7hcG0Gt8RiFmlx0g_UVH9hqBTGM
+Content-Type: application/json
+
+###
+PUT http://localhost:8001/products?id=7e166fe2-9d69-46ee-9375-d466047af2c4
+Content-Type: application/json
+
+{
+    "name": "Product Z",
+    "price": 199
+}
+
+###
+DELETE http://localhost:8001/products?id=7e166fe2-9d69-46ee-9375-d466047af2c4
+Content-Type: application/json
+

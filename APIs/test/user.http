@@ -1,0 +1,41 @@
+###
+POST http://localhost:8001/users
+Content-Type: application/json
+
+{
+    "name": "User Z",
+    "email": "email.Z@mail.com",
+    "password": "123456"
+}
+
+###
+POST http://localhost:8001/users/auth
+Content-Type: application/json
+
+{
+    "email": "email.Z@mail.com",
+    "password": "123456"
+}
+
+###
+GET  http://localhost:8001/users/all?limit=5&page=1&order=asc
+Content-Type: application/json
+
+###
+GET  http://localhost:8001/users?id=a9f1a799-8419-431b-8d2e-8524ed34fbe4
+Content-Type: application/json
+
+###
+PUT http://localhost:8001/users?id=a9f1a799-8419-431b-8d2e-8524ed34fbe4
+Content-Type: application/json
+
+{
+    "name": "User X",
+    "email": "email.x@mail.com",
+    "password": "123456"
+}
+
+###
+DELETE http://localhost:8001/users?id=7e166fe2-9d69-46ee-9375-d466047af2c4
+Content-Type: application/json
+
