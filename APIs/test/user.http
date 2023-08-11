@@ -1,14 +1,4 @@
 ###
-POST http://localhost:8001/users
-Content-Type: application/json
-
-{
-    "name": "User Z",
-    "email": "email.Z@mail.com",
-    "password": "123456"
-}
-
-###
 POST http://localhost:8001/users/auth
 Content-Type: application/json
 
@@ -17,6 +7,15 @@ Content-Type: application/json
     "password": "123456"
 }
 
+###
+POST http://localhost:8001/users
+Content-Type: application/json
+
+{
+    "name": "User Z",
+    "email": "email.Z@mail.com",
+    "password": "123456"
+}
 ###
 GET  http://localhost:8001/users/all?limit=5&page=1&order=asc
 Content-Type: application/json
