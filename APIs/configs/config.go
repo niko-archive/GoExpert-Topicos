@@ -70,6 +70,7 @@ func (envs *ENVs) Print() {
 	log.Default().Println("JWT_SECRET:", envs.JWT_SECRET)
 	log.Default().Println("SERVER_HOST:", envs.SERVER_HOST)
 	log.Default().Println("SERVER_PORT:", envs.SERVER_PORT)
+	log.Default().Println("DEBUG:", envs.DEBUG)
 	log.SetPrefix("")
 	PrintSeparator()
 
