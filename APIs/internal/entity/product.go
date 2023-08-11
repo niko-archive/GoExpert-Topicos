@@ -2,9 +2,9 @@ package entity
 
 import (
 	"errors"
-	"time"
 
 	"github.dev/nicolasmmb/GoExpert-Topicos/pkg/entity"
+	"gorm.io/gorm"
 )
 
 var (
@@ -16,18 +16,17 @@ var (
 )
 
 type Product struct {
-	ID        entity.ID `json:"id"`
-	Name      string    `json:"name"`
-	Price     float64   `json:"price"`
-	CreatedAt time.Time `json:"created_at"`
+	ID    entity.ID `json:"id" gorm:"type:uuid;primaryKey;not null;uniqueIndex"`
+	Name  string    `json:"name" gorm:"not null; index:idx_name;"`
+	Price float64   `json:"price" gorm:"not null; index:idx_price;"`
+	gorm.Model
 }
 
 func NewProduct(name string, price float64) (*Product, error) {
 	p := &Product{
-		ID:        entity.NewID(),
-		Name:      name,
-		Price:     price,
-		CreatedAt: time.Now(),
+		ID:    entity.NewID(),
+		Name:  name,
+		Price: price,
 	}
 
 	err := p.Validate()
