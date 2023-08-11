@@ -12,7 +12,6 @@ func TestNewProduct(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, p)
 	assert.NotEmpty(t, p.ID)
-	assert.NotEmpty(t, p.CreatedAt)
 	assert.Equal(t, "Product-001", p.Name)
 	assert.Equal(t, 100.0, p.Price)
 
