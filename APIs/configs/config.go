@@ -4,6 +4,9 @@ import (
 	"log"
 	"strconv"
 
+	"github.dev/nicolasmmb/GoExpert-Topicos/internal/entity"
+	"gorm.io/gorm"
+
 	"github.com/spf13/viper"
 )
 
@@ -43,10 +46,17 @@ func LoadENVs(path string) *ENVs {
 	return envs
 }
 
+func PrintSeparator() {
+	log.SetFlags(0)
+	log.SetPrefix("")
+	log.Default().Println("=============================================")
+}
+
 func (envs *ENVs) Print() {
 
 	log.SetFlags(0)
-	log.Default().Println("ENVs:")
+	PrintSeparator()
+	log.SetPrefix("[ENVs] ")
 	log.Default().Println("DB_HOST:", envs.DB_HOST)
 	log.Default().Println("DB_PORT:", envs.DB_PORT)
 	log.Default().Println("DB_USER:", envs.DB_USER)
@@ -57,9 +67,19 @@ func (envs *ENVs) Print() {
 	log.Default().Println("JWT_SECRET:", envs.JWT_SECRET)
 	log.Default().Println("SERVER_HOST:", envs.SERVER_HOST)
 	log.Default().Println("SERVER_PORT:", envs.SERVER_PORT)
+	log.SetPrefix("")
+	PrintSeparator()
 
 }
 
 func (envs *ENVs) GetServerAddress() string {
 	return envs.SERVER_HOST + ":" + strconv.Itoa(envs.SERVER_PORT)
+}
+
+func CreateAdmin(db *gorm.DB) {
+	u, err := entity.NewUser("admin", "admin@mail.com", "admin")
+	if err != nil {
+		log.Fatal(err)
+	}
+	db.Create(&u)
 }
