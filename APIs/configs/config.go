@@ -6,6 +6,7 @@ import (
 
 	"github.dev/nicolasmmb/GoExpert-Topicos/internal/entity"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/spf13/viper"
 )
@@ -26,6 +27,8 @@ type ENVs struct {
 	// Server Configs
 	SERVER_HOST string `mapstructure:"SERVER_HOST"`
 	SERVER_PORT int    `mapstructure:"SERVER_PORT"`
+	// DEBUG
+	DEBUG bool `mapstructure:"DEBUG"`
 }
 
 func LoadENVs(path string) *ENVs {
@@ -81,5 +84,19 @@ func CreateAdmin(db *gorm.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	db.Create(&u)
+	err = db.Create(&u).Error
+	if err != nil {
+		log.Default().Println("Admin already exists")
+	}
+}
+
+func (envs *ENVs) GetLoggerType() logger.LogLevel {
+	logType := logger.Silent
+	if envs.DEBUG {
+		log.Println("Debug Mode: ON")
+		logType = logger.Info
+	} else {
+		log.Println("Debug Mode: OFF")
+	}
+	return logType
 }
