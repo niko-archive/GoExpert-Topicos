@@ -43,10 +43,9 @@ func main() {
 	middlewares.SetJWTExp(env.JWT_EXP)
 	middlewares.SetJWTSecretKey(env.JWT_SECRET)
 
-	// -> Routes
-	// Products
+	// Routes
+	// -> Products
 	r.Route("/products", func(r chi.Router) {
-
 		r.Use(middlewares.JWTVerify)
 
 		r.Post("/", productHandler.Create)
@@ -58,11 +57,15 @@ func main() {
 
 	// -> Users
 	r.Post("/users/auth", userHandler.GetJWT)
-	r.Post("/users", userHandler.Create)
-	r.Get("/users", userHandler.GetById)
-	r.Put("/users", userHandler.Update)
-	r.Delete("/users", userHandler.Delete)
-	r.Get("/users/all", userHandler.GetAll)
+	r.Route("/users", func(r chi.Router) {
+		r.Use(middlewares.JWTVerify)
+
+		r.Post("/users", userHandler.Create)
+		r.Get("/users", userHandler.GetById)
+		r.Put("/users", userHandler.Update)
+		r.Delete("/users", userHandler.Delete)
+		r.Get("/users/all", userHandler.GetAll)
+	})
 
 	// Server
 	serverAddress := env.GetServerAddress()
