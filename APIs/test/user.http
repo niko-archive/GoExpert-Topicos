@@ -3,12 +3,13 @@ POST http://localhost:8001/users/auth
 Content-Type: application/json
 
 {
-    "email": "email.Z@mail.com",
-    "password": "123456"
+    "email": "admin@mail.com",
+    "password": "admin"
 }
 
 ###
 POST http://localhost:8001/users
+Authorization: Bearer <TOKEN>
 Content-Type: application/json
 
 {
@@ -17,15 +18,18 @@ Content-Type: application/json
     "password": "123456"
 }
 ###
-GET  http://localhost:8001/users/all?limit=5&page=1&order=asc
+GET  http://localhost:8001/users/all?limit=50000&page=1&order=asc
+Authorization: Bearer <TOKEN>
 Content-Type: application/json
 
 ###
 GET  http://localhost:8001/users?id=a9f1a799-8419-431b-8d2e-8524ed34fbe4
+Authorization: Bearer <TOKEN>
 Content-Type: application/json
 
 ###
 PUT http://localhost:8001/users?id=a9f1a799-8419-431b-8d2e-8524ed34fbe4
+Authorization: Bearer <TOKEN>
 Content-Type: application/json
 
 {
@@ -36,5 +40,6 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:8001/users?id=7e166fe2-9d69-46ee-9375-d466047af2c4
+Authorization: Bearer <TOKEN>
 Content-Type: application/json
 
