@@ -107,9 +107,11 @@ func (h *UserHandler) GetById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userOutput := dto.UserOutput{
-		ID:    u.ID.String(),
-		Name:  u.Name,
-		Email: u.Email,
+		ID:        u.ID.String(),
+		Name:      u.Name,
+		Email:     u.Email,
+		CreatedAt: u.CreatedAt.String(),
+		UpdatedAt: u.UpdatedAt.String(),
 	}
 
 	json.NewEncoder(w).Encode(userOutput)
@@ -133,9 +135,11 @@ func (h *UserHandler) GetByEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userOutput := dto.UserOutput{
-		ID:    u.ID.String(),
-		Name:  u.Name,
-		Email: u.Email,
+		ID:        u.ID.String(),
+		Name:      u.Name,
+		Email:     u.Email,
+		CreatedAt: u.CreatedAt.String(),
+		UpdatedAt: u.UpdatedAt.String(),
 	}
 
 	json.NewEncoder(w).Encode(userOutput)
@@ -241,9 +245,11 @@ func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	for _, u := range users {
 		userOutput = append(userOutput, dto.UserOutput{
-			ID:    u.ID.String(),
-			Name:  u.Name,
-			Email: u.Email,
+			ID:        u.ID.String(),
+			Name:      u.Name,
+			Email:     u.Email,
+			CreatedAt: u.CreatedAt.String(),
+			UpdatedAt: u.UpdatedAt.String(),
 		})
 	}
 
