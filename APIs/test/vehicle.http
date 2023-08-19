@@ -1,0 +1,5 @@
+
+GET  http://localhost:8001/vehicles/all?limit=10000&page=1&order=asc
+Content-Type: application/json
+
+

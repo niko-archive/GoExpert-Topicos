@@ -9,11 +9,15 @@ run:
 
 build:
 	@echo "==> BUILD.."
-	@go build -o bin/server cmd/server/main.go ldflags "-s -w"
+	@go build -o bin/server cmd/server/main.go
 
-testx:
+test:
 	@echo "==> TEST.."
 	@go test -v ./...
+
+exp:
+	@echo "==> EXPORT.."
+	@export $(cat .env | xargs)
 
 clean:
 	@echo "==> CLEAN.."

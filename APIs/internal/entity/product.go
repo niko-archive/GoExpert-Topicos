@@ -16,9 +16,9 @@ var (
 )
 
 type Product struct {
-	ID    entity.ID `json:"id" gorm:"type:uuid;primaryKey;not null;uniqueIndex"`
-	Name  string    `json:"name" gorm:"not null; index:idx_name;"`
-	Price float64   `json:"price" gorm:"not null; index:idx_price;"`
+	ID    entity.ID `gorm:"type:uuid;primaryKey;not null;uniqueIndex"`
+	Name  string    `gorm:"not null; index:idx_name;"`
+	Price float64   `gorm:"not null; index:idx_price;"`
 	gorm.Model
 }
 

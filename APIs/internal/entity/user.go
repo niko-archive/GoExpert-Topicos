@@ -7,10 +7,10 @@ import (
 )
 
 type User struct {
-	ID       entity.ID `json:"id" gorm:"type:uuid;primaryKey;not null;uniqueIndex"`
-	Name     string    `json:"name" gorm:"not null"`
-	Email    string    `json:"email" gorm:"uniqueIndex;not null"`
-	Password string    `json:"-" gorm:"not null"`
+	ID       entity.ID `gorm:"type:uuid;primaryKey;not null;uniqueIndex"`
+	Name     string    `gorm:"not null"`
+	Email    string    `gorm:"uniqueIndex;not null"`
+	Password string    `gorm:"not null"`
 	gorm.Model
 }
 

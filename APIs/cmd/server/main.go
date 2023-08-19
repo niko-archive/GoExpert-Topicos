@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	env := configs.LoadENVs("./")
+	env := configs.LoadENVs("./.env")
 	env.Print()
 
 	log.SetPrefix("[MAIN] ")
@@ -34,13 +34,15 @@ func main() {
 
 	// Migrations
 	log.Println("Running Migrations")
-	err = db.AutoMigrate(&entity.User{}, &entity.Product{})
+	err = db.AutoMigrate(&entity.User{}, &entity.Product{}, &entity.Vehicle{})
 	if err != nil {
 		log.Fatal(err)
 	}
 	configs.CreateAdmin(db)
 
+	// populate.LoadCSV(db)
 	log.Println("Starting Server")
+
 	// GIN
 	r := chi.NewRouter()
 	// Handlers
@@ -49,6 +51,9 @@ func main() {
 
 	userDB := database.NewUser(db)
 	userHandler := handlers.NewUserHandler(userDB)
+
+	vehicleDB := database.NewVehicle(db)
+	vehicleHandler := handlers.NewVehicleHandler(vehicleDB)
 
 	// Middlewares
 	r.Use(middleware.Logger)
@@ -77,6 +82,11 @@ func main() {
 		r.Put("/", userHandler.Update)
 		r.Delete("/", userHandler.Delete)
 		r.Get("/all", userHandler.GetAll)
+	})
+
+	// -> Vehicles
+	r.Route("/vehicles", func(r chi.Router) {
+		r.Get("/all", vehicleHandler.FindAll)
 	})
 
 	// Server

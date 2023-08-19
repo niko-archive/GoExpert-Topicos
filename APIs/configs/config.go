@@ -2,6 +2,8 @@ package configs
 
 import (
 	"log"
+	"os"
+	"reflect"
 	"strconv"
 
 	"github.dev/nicolasmmb/GoExpert-Topicos/internal/entity"
@@ -32,19 +34,62 @@ type ENVs struct {
 }
 
 func LoadENVs(path string) *ENVs {
-	viper.SetConfigType("env")
-	viper.SetConfigFile(".env")
-	viper.SetConfigName(".env")
-	viper.AddConfigPath(path)
-	viper.AutomaticEnv()
+	v := viper.New()
 
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err)
+	if envs != nil {
+		return envs
 	}
-	err = viper.Unmarshal(&envs)
+
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		log.Fatal("No ENV config file found")
+	}
+
+	v.SetConfigFile(".env")
+	v.AddConfigPath(path)
+	v.AutomaticEnv()
+
+	err = v.ReadInConfig()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
+	}
+
+	err = v.Unmarshal(&envs)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return envs
+}
+
+func LoadENV() *ENVs {
+	envs := &ENVs{}
+	val := reflect.ValueOf(envs).Elem()
+
+	for i := 0; i < val.NumField(); i++ {
+		field := val.Type().Field(i).Tag.Get("mapstructure")
+		value := os.Getenv(field)
+		switch val.Field(i).Kind() {
+		case reflect.String:
+			val.Field(i).SetString(value)
+		case reflect.Int:
+			intValue, err := strconv.Atoi(value)
+
+			if err != nil {
+				panic(err)
+			}
+			val.Field(i).SetInt(int64(intValue))
+		case reflect.Bool:
+			boolValue, err := strconv.ParseBool(value)
+			if err != nil {
+				panic(err)
+			}
+			val.Field(i).SetBool(boolValue)
+		case reflect.Struct:
+			panic("Structs not supported yet")
+		default:
+			panic("Type not supported yet")
+		}
 	}
 	return envs
 }
