@@ -30,7 +30,7 @@ type ENVs struct {
 	SERVER_HOST string `mapstructure:"SERVER_HOST"`
 	SERVER_PORT int    `mapstructure:"SERVER_PORT"`
 	// DEBUG
-	DEBUG bool `mapstructure:"DEBUG"`
+	IS_DEBUG bool `mapstructure:"IS_DEBUG"`
 }
 
 func LoadENVs(path string) *ENVs {
@@ -115,7 +115,7 @@ func (envs *ENVs) Print() {
 	log.Default().Println("JWT_SECRET:", envs.JWT_SECRET)
 	log.Default().Println("SERVER_HOST:", envs.SERVER_HOST)
 	log.Default().Println("SERVER_PORT:", envs.SERVER_PORT)
-	log.Default().Println("DEBUG:", envs.DEBUG)
+	log.Default().Println("IS_DEBUG:", envs.IS_DEBUG)
 	log.SetPrefix("")
 	PrintSeparator()
 
@@ -138,7 +138,7 @@ func CreateAdmin(db *gorm.DB) {
 
 func (envs *ENVs) GetLoggerType() logger.LogLevel {
 	logType := logger.Silent
-	if envs.DEBUG {
+	if envs.IS_DEBUG {
 		log.Println("Debug Mode: ON")
 		logType = logger.Info
 	} else {

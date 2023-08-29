@@ -56,7 +56,12 @@ func main() {
 	vehicleHandler := handlers.NewVehicleHandler(vehicleDB)
 
 	// Middlewares
+	r.Use(middlewares.CORS)
+	r.Use(middlewares.RequestId)
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.CleanPath)
+
 	middlewares.SetJWTExp(env.JWT_EXP)
 	middlewares.SetJWTSecretKey(env.JWT_SECRET)
 
