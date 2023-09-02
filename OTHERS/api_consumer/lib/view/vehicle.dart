@@ -14,13 +14,20 @@ class VehicleView extends StatelessWidget {
         title: const Text('Vehicle'),
         centerTitle: true,
         backgroundColor: Colors.purple,
-        leading: backToHome(context),
+        // leading: backToHome(context),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.go(Home.routeName);
+            },
+            icon: const Icon(Icons.home),
+          ),
+        ],
       ),
       body: const Center(
         child: Column(
           children: [
-            SizedBox(height: 10),
-            Expanded(child: ListOfVehicles()),
+            ListOfVehicles(),
           ],
         ),
       ),
@@ -49,6 +56,8 @@ class ListOfVehicles extends StatefulWidget {
 class _ListOfVehiclesState extends State<ListOfVehicles> {
   int page = 1;
 
+  bool isLoading = false;
+  bool firstLoad = true;
   RepoVehicle repo = RepoVehicle();
   List<VehicleDTO> vehicles = [];
 
@@ -57,14 +66,21 @@ class _ListOfVehiclesState extends State<ListOfVehicles> {
   @override
   void initState() {
     super.initState();
+    firstPopulated();
+
     scroll.addListener(() async {
       var maxScroll = scroll.position.maxScrollExtent;
       var currentScroll = scroll.position.pixels;
 
       if (currentScroll == maxScroll) {
+        isLoading = true;
+        repo.getPagination(page, 20).then((values) {
+          setState(() {
+            vehicles.addAll(values);
+          });
+        });
         page++;
-        List<VehicleDTO> vehicles = await repo.getPagination(page, 10);
-        addMoreToListDTO(vehicles);
+        isLoading = false;
       }
     });
   }
@@ -78,32 +94,50 @@ class _ListOfVehiclesState extends State<ListOfVehicles> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: repo.getPagination(page, 10),
-      builder:
-          (BuildContext context, AsyncSnapshot<List<VehicleDTO>> snapshot) {
+      future: () async {
+        return !isLoading;
+      }(),
+      builder: (context, snapshot) {
         if (snapshot.hasData) {
-          addMoreToListDTO(snapshot.data!);
-          return ListView.builder(
-            controller: scroll,
-            itemCount: vehicles.length,
-            shrinkWrap: true,
-            itemBuilder: (BuildContext context, int index) {
-              // addMoreToList(snapshot, index);
-              return ListTile(
-                title: Text(vehicles[index].id),
-                subtitle: Text(
-                    '${vehicles[index].referenceMonth} -- ${vehicles[index].fipeCode} -- ${vehicles[index].vehicleType} -- ${vehicles[index].fuel} -- ${vehicles[index].brand} -- ${vehicles[index].model}'),
-              );
-            },
+          return Expanded(
+            child: Scrollbar(
+              controller: scroll,
+              child: ListView.builder(
+                physics: const ClampingScrollPhysics(),
+                controller: scroll,
+                itemCount: vehicles.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(vehicles[index].model),
+                    subtitle: Text(vehicles[index].brand),
+                    leading: CircleAvatar(
+                      child: Text(vehicles[index].fuel.substring(0, 1)),
+                    ),
+                  );
+                },
+              ),
+            ),
           );
         } else {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
       },
     );
   }
 
-  void addMoreToListDTO(List<VehicleDTO> snapshot) {
-    vehicles.addAll(snapshot);
+  void firstPopulated() {
+    if (firstLoad) {
+      isLoading = true;
+      repo.getPagination(page, 15).then((values) {
+        setState(() {
+          vehicles.addAll(values);
+          page++;
+        });
+      });
+      isLoading = false;
+      firstLoad = false;
+    }
   }
 }
