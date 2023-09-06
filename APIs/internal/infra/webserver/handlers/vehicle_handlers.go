@@ -2,11 +2,16 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.dev/nicolasmmb/GoExpert-Topicos/internal/dto"
+	"github.dev/nicolasmmb/GoExpert-Topicos/internal/entity"
 	"github.dev/nicolasmmb/GoExpert-Topicos/internal/infra/database"
+	"github.dev/nicolasmmb/GoExpert-Topicos/pkg/filters"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 type VehicleHandler struct {
@@ -66,4 +71,53 @@ func (v *VehicleHandler) FindAll(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(vehicleOutput)
 	w.WriteHeader(http.StatusOK)
+}
+
+func (v *VehicleHandler) FindByID(w http.ResponseWriter, r *http.Request) {
+	db, _ := gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
+
+	pag := filters.ParsePaginationRequest(r)
+
+	vehicles := []entity.Vehicle{}
+
+	ft := []string{"id", "brand", "model_year", "fuel", "fipe_code"}
+
+	tx := db.Begin()
+	tx = tx.Model(&entity.Vehicle{})
+
+	for _, f := range ft {
+		definition := filters.ParseParamRequest(r, f)
+		if definition == nil {
+			continue
+		}
+		query, value := definition.PreBuildQuery()
+
+		log.Println(value)
+
+		tx = tx.Where(query, value)
+
+	}
+	tx = tx.Offset(pag.Offset()).Limit(pag.Limit)
+
+	tx.Find(&vehicles)
+
+	var vehicleOutput []dto.VehicleOutput
+
+	for _, v := range vehicles {
+		vehicleOutput = append(vehicleOutput, dto.VehicleOutput{
+			ID:             v.ID.String(),
+			Value:          v.Value,
+			Brand:          v.Brand,
+			Model:          v.Model,
+			ModelYear:      v.ModelYear,
+			Fuel:           v.Fuel,
+			FipeCode:       v.FipeCode,
+			ReferenceMonth: v.ReferenceMonth,
+			VehicleType:    v.VehicleType,
+		})
+	}
+
+	json.NewEncoder(w).Encode(vehicleOutput)
+	w.WriteHeader(http.StatusOK)
+
 }

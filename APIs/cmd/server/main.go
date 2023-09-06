@@ -92,6 +92,7 @@ func main() {
 	// -> Vehicles
 	r.Route("/vehicles", func(r chi.Router) {
 		r.Get("/all", vehicleHandler.FindAll)
+		r.Get("/filters", vehicleHandler.FindByID)
 	})
 
 	// Server

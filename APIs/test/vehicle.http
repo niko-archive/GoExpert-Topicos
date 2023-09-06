@@ -3,3 +3,8 @@ GET  http://localhost:8001/vehicles/all?limit=10&page=1&order=asc
 Content-Type: application/json
 
 
+###
+GET  http://localhost:8001/vehicles/filters?id=eq.123
+Content-Type: application/json
+
+

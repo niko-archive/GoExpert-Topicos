@@ -1,0 +1,16 @@
+{
+    // See https://code.visualstudio.com/docs/editor/debugging#_launchjson-attributes
+    // and variables here https://code.visualstudio.com/docs/editor/variables-reference
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "my-project-api-gateway",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "envFile": "${workspaceFolder}/APIs/.env",
+            "program": "${workspaceFolder}/APIs/cmd/server/main.go",
+            "cwd": "${workspaceFolder}/APIs/",
+        }
+    ]
+}
