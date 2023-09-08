@@ -14,7 +14,7 @@ final GoRouter routes = GoRouter(
     GoRoute(
       path: '/vehicle',
       builder: (BuildContext context, GoRouterState state) {
-        return const VehicleView();
+        return VehicleView();
       },
     ),
   ],

@@ -1,17 +1,27 @@
-import 'package:api_consumer/dto/vehicle.dart';
-import 'package:api_consumer/repository/vehicle.dart';
+import 'dart:async';
+
+import 'package:api_consumer/store/vehicles.dart';
 import 'package:api_consumer/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class VehicleView extends StatelessWidget {
-  const VehicleView({super.key});
+  VehicleView({super.key});
+
+  final VehiclesStore store = VehiclesStore();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vehicle'),
+        title: GestureDetector(
+          child: Text('Vehicle: ${store.total}'),
+          onTap: () {
+            Timer.periodic(const Duration(seconds: 1), (timer) {
+              (context as Element).markNeedsBuild();
+            });
+          },
+        ),
         centerTitle: true,
         backgroundColor: Colors.purple,
         // leading: backToHome(context),
@@ -54,64 +64,58 @@ class ListOfVehicles extends StatefulWidget {
 }
 
 class _ListOfVehiclesState extends State<ListOfVehicles> {
-  int page = 1;
-
-  bool isLoading = false;
-  bool firstLoad = true;
-  RepoVehicle repo = RepoVehicle();
-  List<VehicleDTO> vehicles = [];
-
-  final ScrollController scroll = ScrollController();
+  VehiclesStore store = VehiclesStore();
 
   @override
   void initState() {
     super.initState();
     firstPopulated();
 
-    scroll.addListener(() async {
-      var maxScroll = scroll.position.maxScrollExtent;
-      var currentScroll = scroll.position.pixels;
+    store.scroll.addListener(() async {
+      var maxScroll = store.scroll.position.maxScrollExtent;
+      var currentScroll = store.scroll.position.pixels;
 
       if (currentScroll == maxScroll) {
-        isLoading = true;
-        repo.getPagination(page, 20).then((values) {
-          setState(() {
-            vehicles.addAll(values);
-          });
+        setState(() {});
+        store.isLoading = true;
+
+        store.repo.getPagination(store.page, 50).then((values) {
+          store.vehicles.addAll(values);
         });
-        page++;
-        isLoading = false;
+        store.isLoading = false;
+        store.page++;
+        setState(() {});
       }
     });
   }
 
   @override
   void dispose() {
-    scroll.dispose();
+    store.scroll.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: () async {
-        return !isLoading;
-      }(),
+      future: () async {}(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (!store.isLoading) {
           return Expanded(
+            flex: 1,
             child: Scrollbar(
-              controller: scroll,
+              thickness: 10,
+              controller: store.scroll,
               child: ListView.builder(
                 physics: const ClampingScrollPhysics(),
-                controller: scroll,
-                itemCount: vehicles.length,
+                controller: store.scroll,
+                itemCount: store.vehicles.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(vehicles[index].model),
-                    subtitle: Text(vehicles[index].brand),
+                    title: Text(store.vehicles[index].model),
+                    subtitle: Text(store.vehicles[index].brand),
                     leading: CircleAvatar(
-                      child: Text(vehicles[index].fuel.substring(0, 1)),
+                      child: Text(store.vehicles[index].fuel.substring(0, 1)),
                     ),
                   );
                 },
@@ -128,16 +132,15 @@ class _ListOfVehiclesState extends State<ListOfVehicles> {
   }
 
   void firstPopulated() {
-    if (firstLoad) {
-      isLoading = true;
-      repo.getPagination(page, 15).then((values) {
+    if (store.firstLoad) {
+      store.repo.getPagination(store.page, 50).then((values) {
         setState(() {
-          vehicles.addAll(values);
-          page++;
+          store.vehicles.addAll(values);
+          store.page++;
         });
       });
-      isLoading = false;
-      firstLoad = false;
+
+      store.firstLoad = false;
     }
   }
 }
