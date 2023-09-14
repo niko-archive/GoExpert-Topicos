@@ -1,0 +1,25 @@
+package main
+
+import (
+	"tinygo.org/x/bluetooth"
+)
+
+var adapter = bluetooth.DefaultAdapter
+
+func main() {
+	// Enable BLE interface.
+	err := adapter.Enable()
+	if err != nil {
+		println("Unable to enable BLE interface:", err)
+		return
+	}
+
+	adapter.AddService(NewService())
+
+	// data01 := []byte{0x1e, 0xff, 0x4c, 0x00, 0x07, 0x19, 0x07, 0x02, 0x20, 0x75, 0xaa, 0x30, 0x01, 0x00, 0x00, 0x45}
+	// data02 := []byte{0xda, 0x29, 0x58, 0xab, 0x8d, 0x29, 0x40, 0x3d, 0x5c, 0x1b, 0x93, 0x3a}
+
+	// leftSpeaker := rand.Intn(100)
+	// rightSpeaker := rand.Intn(100)
+
+}

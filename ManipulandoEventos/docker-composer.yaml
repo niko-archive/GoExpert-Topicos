@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  rbtmq:
+    image: rabbitmq:3.11.0-management
+    container_name: server-rbtmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15692:15692"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_VHOST=/
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 386M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
